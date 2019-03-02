@@ -1,21 +1,24 @@
 package com.codepath.claudia.flickster.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.claudia.flickster.DetailActivity;
 import com.codepath.claudia.flickster.R;
 import com.codepath.claudia.flickster.models.Movie;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -48,33 +51,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         Movie movie = movies.get(position);
         //Bind the movie data into the view holder
         holder.bind(movie);
-
-//        holder.itemView.setTag(new Integer(position));
-        holder.ivPoster.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("clickable", "You clicked the image at position: "+holder.getAdapterPosition());
-
-                //Create and show alert with movie review
-                AlertDialog.Builder builder  = new AlertDialog.Builder(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
-
-                Log.d("hi", "The context is: " + context);
-
-                builder.setCancelable(true);
-                builder.setTitle("REVIEW");
-                builder.setMessage(movies.get(holder.getAdapterPosition()).getReview() + "\n"
-                        + "Rating: " + movies.get(holder.getAdapterPosition()).getVoteAverage() + "/10");
-
-                builder.setPositiveButton("Thanks", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-
-                builder.show();
-            }
-        });
     }
 
     @Override
@@ -87,16 +63,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         TextView tvTitle;
         TextView tvOverview;
         ImageView ivPoster;
-        int position;
+        RelativeLayout container;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvOverview = itemView.findViewById(R.id.tvOverview);
             ivPoster = itemView.findViewById(R.id.ivPoster);
+            container = itemView.findViewById(R.id.container);
         }
 
-        public void bind(Movie movie) {
+        public void bind(final Movie movie) {
             tvTitle.setText(movie.getTitle());
             tvOverview.setText(movie.getOverview());
             //Reference the backdrop path if phone is in landscape
@@ -104,6 +81,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
             if(context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
                 imgUrl = movie.getBackdropPath();
             Glide.with(context).load(imgUrl).into(ivPoster);
+            // Add click listener on the whole row
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Navigate to DetailActivity on tap
+                    Intent i = new Intent(context, DetailActivity.class);
+                    // Need to pass in a Parcelable or Serializable object so that it can be broken down into components
+                    i.putExtra("movie", Parcels.wrap(movie));
+;                    context.startActivity(i);
+                }
+            });
         }
     }
 }

@@ -65,8 +65,6 @@ public class MovieActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
-
-        Log.d("exit",String.format("%s", movies.size()));
     }
 
     private String getVideoURL(String movieID) {
