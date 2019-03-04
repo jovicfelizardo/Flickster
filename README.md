@@ -26,7 +26,7 @@ Flixster is an app that allows users to browse movies from the [The Movie Databa
 <img src="walkthrough.gif" width=250><br>
 
 ### Notes
-Learning how to host youtube within the app was eye opening.
+I implemented a pop up for each movie that displays the movie review and rating. When implementing this component I had to think of creative ways of optaining the position of the movie that was clicked as well as the context in which I wanted the pop up to show. I also had trouble finding the right place to make an api GET request to obtain the review for each specific movie. After a lot of research and experimentation, I was able to implement it flawlessly!
 
 ### Open-source libraries used
 
